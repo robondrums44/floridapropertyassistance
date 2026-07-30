@@ -1,4 +1,44 @@
-const menu=document.querySelector('.menu');const nav=document.querySelector('#links');if(menu&&nav){menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open))});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')))}
-const year=document.querySelector('#year');if(year)year.textContent=new Date().getFullYear();
-const form=document.querySelector('#lead-form');if(form){form.addEventListener('submit',e=>{e.preventDefault();const msg=document.querySelector('#form-message');msg.textContent='Thank you. Your information has been received for testing. FreedomSoft connection is the next step.';msg.style.cssText='margin-top:12px;padding:12px;border-radius:7px;background:#e9f2ef;color:#245d4d;font-weight:700;font-size:13px';})}
-const observer=new IntersectionObserver(entries=>entries.forEach(x=>x.isIntersecting&&x.target.classList.add('visible')),{threshold:.12});document.querySelectorAll('.section,.cards article').forEach(el=>{el.classList.add('reveal');observer.observe(el)});
+const menuButton = document.querySelector('.menu-toggle');
+const nav = document.querySelector('.primary-nav');
+
+if (menuButton && nav) {
+  menuButton.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('open');
+    menuButton.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  nav.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.13 });
+
+document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const form = document.getElementById('lead-form');
+const message = document.getElementById('form-message');
+
+if (form && message) {
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    message.textContent = 'Form received in preview mode. Connect this form to FreedomSoft before launch.';
+  });
+}
